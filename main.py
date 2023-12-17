@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import random
 from PIL import Image, ImageDraw
 
-octaves = 2 # однородность шума (чем больше - тем менее однородный, своего рода зум)
+octaves = 4 # однородность шума (чем больше - тем менее однородный, своего рода зум)
 amp = 10 # количество возможных координат у высоты
-period = 270 # переодичность пиков (чем выше - тем шум более гладкий)
+period = 700 # переодичность пиков (чем выше - тем шум более гладкий)
 terrain_width = 1024 # размер поля
 seed = random.randint(1,10000) # сид шума
 print(seed)
@@ -34,13 +34,14 @@ for position in range(terrain_width**2):
    x = floor(position / terrain_width)
    z = floor(position % terrain_width)
    if landscale[int(x)][int(z)] < height:
-      draw.point((int(x), int(z)), (85, 72, 189))
+      draw.point((int(x), int(z)), (0,149,182)) #85, 72, 189
    elif landscale[int(x)][int(z)] == height:
       draw.point((int(x), int(z)), (252, 186, 3))
    elif landscale[int(x)][int(z)] > height:
       draw.point((int(x), int(z)), (19, 112, 21))
 
 img.save(f"outputs/output{seed}.png")
+
 plt.axis("off")
 plt.imshow(landscale)
 plt.savefig(f'noises/pnoise{seed}.png', pad_inches=0, bbox_inches="tight")
