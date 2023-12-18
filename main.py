@@ -29,16 +29,20 @@ draw = ImageDraw.Draw(img)
 
 pixdata = img.load()
 height = 0
-# закрашиваем карту по значениям в матрице
-for position in range(terrain_width**2):
+
+#http://flag.kremlin.ru/anthem/
+for position in range(0, terrain_width//3):
    x = floor(position / terrain_width)
    z = floor(position % terrain_width)
-   if landscale[int(x)][int(z)] < height:
-      draw.point((int(x), int(z)), (0,149,182)) #85, 72, 189
-   elif landscale[int(x)][int(z)] == height:
-      draw.point((int(x), int(z)), (252, 186, 3))
-   elif landscale[int(x)][int(z)] > height:
-      draw.point((int(x), int(z)), (19, 112, 21))
+   draw.point((int(x), int(z)), (255,255,255))
+for position in range(terrain_width//3, terrain_width//3*2):
+   x = floor(position / terrain_width)
+   z = floor(position % terrain_width)
+   draw.point((int(x), int(z)), (0,0,255))
+for position in range(terrain_width//3*2, terrain_width):
+   x = floor(position / terrain_width)
+   z = floor(position % terrain_width)
+   draw.point((int(x), int(z)), (255,0,0))
 
 img.save(f"outputs/output{seed}.png")
 
