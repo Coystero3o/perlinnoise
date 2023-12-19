@@ -65,3 +65,4 @@ plt.axis("off")
 plt.imshow(landscale)
 plt.savefig(f'noises/pnoise{seed}.png', pad_inches=0, bbox_inches="tight")
 plt.show()
+
