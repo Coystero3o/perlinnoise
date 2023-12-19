@@ -31,15 +31,15 @@ pixdata = img.load()
 height = 0
 
 #http://flag.kremlin.ru/anthem/
-for position in range(0, terrain_width//3):
+for position in range(0, terrain_width**2//3):
    x = floor(position / terrain_width)
    z = floor(position % terrain_width)
    draw.point((int(x), int(z)), (255,255,255))
-for position in range(terrain_width//3, terrain_width//3*2):
+for position in range(terrain_width**2//3, terrain_width**2//3*2):
    x = floor(position / terrain_width)
    z = floor(position % terrain_width)
    draw.point((int(x), int(z)), (0,0,255))
-for position in range(terrain_width//3*2, terrain_width):
+for position in range(terrain_width**2//3*2, terrain_width**2):
    x = floor(position / terrain_width)
    z = floor(position % terrain_width)
    draw.point((int(x), int(z)), (255,0,0))
