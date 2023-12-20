@@ -73,6 +73,6 @@ for z in range(0, HEIGHT):
             draw.point((x, z), (128, 128, 128))  # горы
         else:
             draw.point((x, z), (255, 250, 250))  # снега
-print(f'current seed if {seed}')
+print(f'current seed is {seed}')
 makedirs(f'outputs', exist_ok=True)
 img.save(f"outputs/output{seed}.png")
