@@ -1,9 +1,14 @@
-from numpy import floor
-from perlin_noise import PerlinNoise
-import matplotlib.pyplot as plt
 import random
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw  # Depends on the Pillow lib
+import opensimplex as simplex
+import matplotlib.pyplot as plt
 import time
+from os import makedirs
+
+WIDTH = 1024
+HEIGHT = 512
+scale = .007
+seed = None
 
 def timer(func):
     def wrapper(landscale, terrain_width, height=None):
@@ -17,52 +22,60 @@ def timer(func):
 
     return wrapper
 
+
+def sumOctave(num_iterations, z, x, persistence, scale, low, high):
+    maxAmp = 0
+    amp = 1
+    freq = scale
+    noise = 0
+    for i in range(0, num_iterations):
+        noise += simplex.noise2(z * freq, x * freq) * amp
+        maxAmp += amp
+        amp *= persistence
+        freq *= 2
+    noise /= maxAmp
+    noise = noise * (high - low) / 2 + (high + low) / 2
+
+    return noise
+
+
 @timer
-def fillMatrix(landscale, terrain_width):
-    for position in range(terrain_width ** 2):
-        # вычисление высоты y в координатах (x, z)
-        x = floor(position / terrain_width)
-        z = floor(position % terrain_width)
-        y = floor(noise([x / period, z / period]) * amp)
-        landscale[int(x)][int(z)] = int(y)
-    return landscale
-
-@timer
-def fillPicture(landscale, terrain_width, height):
-    for position in range(terrain_width ** 2):
-        x = floor(position / terrain_width)
-        z = floor(position % terrain_width)
-        if landscale[int(x)][int(z)] < height:
-            draw.point((int(x), int(z)), (0, 149, 182))  # 85, 72, 189
-        elif landscale[int(x)][int(z)] == height:
-            draw.point((int(x), int(z)), (252, 186, 3))
-        elif landscale[int(x)][int(z)] > height:
-            draw.point((int(x), int(z)), (19, 112, 21))
+def fillMatrix(landscale, height, width):
+    seed = random.randint(1, 10000)
+    simplex.seed(seed)
+    for z in range(0, height):
+        for x in range(0, width):
+            landscale[z][x] = sumOctave(16, z, x, .5, scale, 0, 255)
+    return landscale, seed
 
 
-octaves = 4  # однородность шума (чем больше - тем менее однородный, своего рода зум)
-amp = 50  # количество возможных координат у высоты
-period = 700  # переодичность пиков (чем выше - тем шум более гладкий)
-terrain_width = 1024  # размер поля
-seed = random.randint(1, 10000)  # сид шума
-image_file = "base.png" # Базовое пустое изображение
-img = Image.open(image_file).convert('RGB')
-draw = ImageDraw.Draw(img)
-pixdata = img.load()
-print(seed)
-
-# генерация шума
-noise = PerlinNoise(octaves=octaves, seed=seed)
-# генерация матрицы и ее заполнение
-landscale = [[0 for i in range(terrain_width)] for i in range(terrain_width)]
-fillMatrix(landscale, terrain_width)
-# заполнение изображения на основе значений в матрице
-fillPicture(landscale, terrain_width, height=0)
-
-img.save(f"outputs/output{seed}.png")
+landscale = [[0 for i in range(WIDTH)] for i in range(HEIGHT)]
+fillMatrix(landscale, HEIGHT, WIDTH)
 
 plt.axis("off")
 plt.imshow(landscale)
-plt.savefig(f'noises/pnoise{seed}.png', pad_inches=0, bbox_inches="tight")
 plt.show()
 
+img = Image.new('RGB', (WIDTH, HEIGHT))
+draw = ImageDraw.Draw(img)
+pixdata = img.load()
+for z in range(0, HEIGHT):
+    for x in range(0, WIDTH):
+        if landscale[z][x] < 140:
+            draw.point((x, z), (0, 0, 255))  # океан
+        elif landscale[z][x] < 150:
+            draw.point((x, z), (0, 191, 255))  # прибрежные воды
+        elif landscale[z][x] < 155:
+            draw.point((x, z), (244, 164, 96))  # берег
+        elif landscale[z][x] < 170:
+            draw.point((x, z), (34, 139, 34))  # низменность
+        elif landscale[z][x] < 190:
+            draw.point((x, z), (0, 128, 0))  # равнина
+        elif landscale[z][x] < 200:
+            draw.point((x, z), (0, 100, 0))  # предгорье
+        elif landscale[z][x] < 235:
+            draw.point((x, z), (128, 128, 128))  # горы
+        else:
+            draw.point((x, z), (255, 250, 250))  # снега
+makedirs(f'/outputs', exist_ok=True)
+img.save(f"outputs/output{seed}.png")
