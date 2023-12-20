@@ -11,12 +11,9 @@ scale = .007
 seed = random.randint(1, 10000)
 
 def timer(func):
-    def wrapper(landscale, terrain_width, height=None):
+    def wrapper(landscale, height, width, seed):
         tb = time.time()
-        if height != None:
-            func(landscale, terrain_width, height)
-        else:
-            func(landscale, terrain_width)
+        func(landscale, height, width, seed)
         te = time.time() - tb
         print(f"It took {te} seconds to generate")
 
