@@ -57,19 +57,19 @@ draw = ImageDraw.Draw(img)
 pixdata = img.load()
 for z in range(0, HEIGHT):
     for x in range(0, WIDTH):
-        if landscale[z][x] < 140:
+        if landscale[z][x] < 125:
             draw.point((x, z), (0, 0, 255))  # океан
-        elif landscale[z][x] < 150:
+        elif landscale[z][x] < 130:
             draw.point((x, z), (0, 191, 255))  # прибрежные воды
-        elif landscale[z][x] < 155:
+        elif landscale[z][x] < 134:
             draw.point((x, z), (244, 164, 96))  # берег
-        elif landscale[z][x] < 170:
+        elif landscale[z][x] < 150:
             draw.point((x, z), (34, 139, 34))  # низменность
-        elif landscale[z][x] < 190:
+        elif landscale[z][x] < 170:
             draw.point((x, z), (0, 128, 0))  # равнина
-        elif landscale[z][x] < 200:
+        elif landscale[z][x] < 185:
             draw.point((x, z), (0, 100, 0))  # предгорье
-        elif landscale[z][x] < 235:
+        elif landscale[z][x] < 195:
             draw.point((x, z), (128, 128, 128))  # горы
         else:
             draw.point((x, z), (255, 250, 250))  # снега
