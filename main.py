@@ -8,7 +8,7 @@ from os import makedirs
 WIDTH = 1024
 HEIGHT = 512
 scale = .007
-seed = None
+seed = random.randint(1, 10000)
 
 def timer(func):
     def wrapper(landscale, terrain_width, height=None):
@@ -40,8 +40,7 @@ def sumOctave(num_iterations, z, x, persistence, scale, low, high):
 
 
 @timer
-def fillMatrix(landscale, height, width):
-    seed = random.randint(1, 10000)
+def fillMatrix(landscale, height, width, seed):
     simplex.seed(seed)
     for z in range(0, height):
         for x in range(0, width):
@@ -50,7 +49,7 @@ def fillMatrix(landscale, height, width):
 
 
 landscale = [[0 for i in range(WIDTH)] for i in range(HEIGHT)]
-fillMatrix(landscale, HEIGHT, WIDTH)
+fillMatrix(landscale, HEIGHT, WIDTH, seed)
 
 plt.axis("off")
 plt.imshow(landscale)
